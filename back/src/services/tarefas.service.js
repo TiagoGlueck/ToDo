@@ -1,5 +1,5 @@
 import * as tarefasRepository from '../repositories/tarefas.repository.js';
-import { STATUS_VALIDOS } from '../enums/status-tarefa.js';
+import { STATUS_VALIDOS, StatusTarefa } from '../enums/status-tarefa.js';
 import { BadRequestError, NotFoundError } from '../errors/http-errors.js';
 
 function validarTarefa({ nome, descricao }) {
@@ -10,6 +10,17 @@ function validarTarefa({ nome, descricao }) {
         throw new BadRequestError('O campo "descricao" deve ser um texto');
     }
     return { nome: nome.trim(), descricao: descricao ?? '' };
+}
+
+async function contarTarefasFazendo() {
+    const tarefas = await tarefasRepository.findAll();
+    let cont = 0;
+    for (let i = 0; i < tarefas.length; i++) {
+        if (tarefas[i].status === StatusTarefa.FAZENDO) {
+            cont++;
+        }
+    }
+    return cont;
 }
 
 function validarAtualizacao({ nome, descricao, status }) {
@@ -50,10 +61,17 @@ export async function createTarefa(dados) {
 }
 
 export async function updateTarefa(id, dados) {
+    if (dados.status === StatusTarefa.FAZENDO) {
+        const quantidade = await contarTarefasFazendo();
+        if (quantidade >= 3) {
+            throw new BadRequestError('Já existem 3 tarefas com status FAZENDO');
+        }
+    }
     const tarefa = await tarefasRepository.update(id, validarAtualizacao(dados));
     if (!tarefa) {
         throw new NotFoundError(`Tarefa ${id} não encontrada`);
     }
+
     return tarefa;
 }
 
