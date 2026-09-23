@@ -17,8 +17,8 @@ export async function create(req, res) {
 }
 
 export async function update(req, res) {
-    const { nome, descricao } = req.body ?? {};
-    const tarefa = await tarefasService.updateTarefa(req.params.id, { nome, descricao });
+    const { nome, descricao, status } = req.body ?? {};
+    const tarefa = await tarefasService.updateTarefa(req.params.id, { nome, descricao, status });
     res.status(200).json(tarefa);
 }
 

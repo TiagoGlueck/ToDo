@@ -1,4 +1,5 @@
 import * as tarefasRepository from '../repositories/tarefas.repository.js';
+import { STATUS_VALIDOS } from '../enums/status-tarefa.js';
 import { BadRequestError, NotFoundError } from '../errors/http-errors.js';
 
 function validarTarefa({ nome, descricao }) {
@@ -11,9 +12,9 @@ function validarTarefa({ nome, descricao }) {
     return { nome: nome.trim(), descricao: descricao ?? '' };
 }
 
-function validarAtualizacao({ nome, descricao }) {
-    if (nome === undefined && descricao === undefined) {
-        throw new BadRequestError('Informe ao menos um campo: "nome" ou "descricao"');
+function validarAtualizacao({ nome, descricao, status }) {
+    if (nome === undefined && descricao === undefined && status === undefined) {
+        throw new BadRequestError('Informe ao menos um campo: "nome", "descricao" ou "status"');
     }
     if (nome !== undefined && (typeof nome !== 'string' || nome.trim() === '')) {
         throw new BadRequestError('O campo "nome" não pode ser vazio');
@@ -21,10 +22,14 @@ function validarAtualizacao({ nome, descricao }) {
     if (descricao !== undefined && typeof descricao !== 'string') {
         throw new BadRequestError('O campo "descricao" deve ser um texto');
     }
+    if (status !== undefined && !STATUS_VALIDOS.includes(status)) {
+        throw new BadRequestError(`O campo "status" deve ser um de: ${STATUS_VALIDOS.join(', ')}`);
+    }
 
     const dados = {};
     if (nome !== undefined) dados.nome = nome.trim();
     if (descricao !== undefined) dados.descricao = descricao;
+    if (status !== undefined) dados.status = status;
     return dados;
 }
 

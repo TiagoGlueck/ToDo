@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { STATUS } from '../status';
 
 export default function TarefaItem({ tarefa, onAtualizar, onRemover }) {
   const [editando, setEditando] = useState(false);
@@ -46,6 +47,16 @@ export default function TarefaItem({ tarefa, onAtualizar, onRemover }) {
         <small>Criada em {new Date(tarefa.createdAt).toLocaleString('pt-BR')}</small>
       </div>
       <div className="acoes">
+        <select
+          value={tarefa.status}
+          onChange={(e) => onAtualizar(tarefa.id, { status: e.target.value }).catch(() => {})}
+        >
+          {STATUS.map((s) => (
+            <option key={s.valor} value={s.valor}>
+              {s.rotulo}
+            </option>
+          ))}
+        </select>
         <button type="button" className="secundario" onClick={() => setEditando(true)}>
           Editar
         </button>

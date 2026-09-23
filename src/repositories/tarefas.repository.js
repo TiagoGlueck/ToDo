@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { StatusTarefa } from '../enums/status-tarefa.js';
 
 const tarefas = [];
 
@@ -18,6 +19,7 @@ export async function create({ nome, descricao }) {
         id: randomUUID(), // trocar para sequencial
         nome,
         descricao,
+        status: StatusTarefa.FAZER,
         createdAt: new Date().toISOString(),
     };
     tarefas.push(tarefa);
