@@ -1,11 +1,11 @@
 {
   "name": "todo",
   "version": "1.0.0",
-  "main": "src/server.js",
+  "main": "back/src/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node --watch src/server.js",
-    "start": "node src/server.js"
+    "dev": "node --watch back/src/server.js",
+    "start": "node back/src/server.js"
   },
   "keywords": [],
   "author": "",
